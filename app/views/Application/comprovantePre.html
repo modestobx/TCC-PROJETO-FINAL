@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Protocolo de Pré-Matrícula - ${aluno.nome}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #eee; padding: 20px; font-family: sans-serif; }
+        .folha { background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .pontilhado { border-top: 2px dashed #999; margin: 40px 0; position: relative; }
+        .pontilhado:after { content: "Recorte aqui"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #fff; padding: 0 10px; color: #999; font-size: 12px; }
+        @media print {
+            body { background: white; padding: 0; }
+            .folha { box-shadow: none; margin: 0; width: 100%; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="text-center mb-4 no-print">
+        <button onclick="window.print()" class="btn btn-primary btn-lg"><i class="fas fa-print"></i> Imprimir Protocolo</button>
+    </div>
+
+	<div class="text-center border-bottom pb-3 mb-4">
+	    <img src="/public/images/logo.jpg" alt="Logo Escola" style="height: 80px; margin-bottom: 10px;">
+	    
+	    <h4 class="fw-bold">ESCOLA MUNICIPAL PREFEITO JOSÉ AMÉRICO</h4>
+	    <h5 class="text-uppercase text-muted">Protocolo de Solicitação de Matrícula</h5>
+	</div>
+
+        <div class="alert alert-warning text-center">
+            <strong>ATENÇÃO:</strong> Esta solicitação ainda <u>NÃO GARANTE</u> sua vaga.<br>
+            Compareça à secretaria até <strong>5 dias úteis</strong> para efetivar a matrícula.
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12 mb-3"><h4><small class="text-muted">Aluno:</small> ${aluno.nome}</h4></div>
+            <div class="col-6 mb-3"><strong>CPF:</strong> ${aluno.cpf}</div>
+            <div class="col-6 mb-3"><strong>Data Nasc.:</strong> ${aluno.dataNascimento?.format('dd/MM/yyyy') ?: '---'}</div>
+            <div class="col-12 mb-3 p-3 bg-light border rounded">
+                <span class="d-block text-muted small">Número do Protocolo (Matrícula Provisória)</span>
+                <span class="display-6 fw-bold text-dark">${aluno.matricula}</span>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h6 class="fw-bold border-bottom pb-2">Documentos Obrigatórios para Levar:</h6>
+            <ul class="list-group list-group-flush mt-2">
+                <li class="list-group-item"><i class="far fa-square me-2"></i> Este comprovante impresso</li>
+                <li class="list-group-item"><i class="far fa-square me-2"></i> Cópia do RG e CPF do Aluno</li>
+                <li class="list-group-item"><i class="far fa-square me-2"></i> Comprovante de Residência Atualizado</li>
+                <li class="list-group-item"><i class="far fa-square me-2"></i> Histórico Escolar (ou declaração de transferência)</li>
+                <li class="list-group-item"><i class="far fa-square me-2"></i> 2 Fotos 3x4</li>
+            </ul>
+        </div>
+
+        <div class="mt-5 pt-5 text-center">
+            __________________________________________<br>
+            Assinatura do Responsável / Aluno
+        </div>
+
+        <div class="pontilhado"></div>
+        
+        <div class="text-center text-muted small mb-2">VIA DA ESCOLA</div>
+        <div class="border p-3 rounded">
+            <div class="row">
+                <div class="col-8">
+                    <strong>Aluno:</strong> ${aluno.nome}<br>
+                    <strong>Protocolo:</strong> ${aluno.matricula}
+                </div>
+                <div class="col-4 text-end">
+                    Data de Recebimento:<br>
+                    ____/____/______
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+#{extends 'main.html' /}
+#{set title:'Meu Perfil' /}
+
+<div class="container mt-4">
+    <div class="row">
+       
+        </div>
+		#{if alunoLogado}
+		    <div class="card mb-4 shadow-sm">
+		        <div class="card-header bg-primary text-white">
+		            <h3><i class="fas fa-id-card"></i> Minhas Informações</h3>
+		        </div>
+		        <div class="card-body">
+		            <h5 class="card-title">${alunoLogado.nome}</h5>
+		            <p class="card-text text-muted">Matrícula: ${alunoLogado.matricula}</p>
+		            <hr>
+		            <ul class="list-group list-group-flush">
+		                <li class="list-group-item">
+		                    <strong>CPF:</strong> ${alunoLogado.cpf}
+		                </li>
+		                </ul>
+		        </div>
+		    </div>
+		#{/if}
+
+		#{else}
+		    <div class="p-5 mb-4 bg-light rounded-3 text-center">
+		        <div class="container-fluid py-5">
+					<img src="/public/images/logo.jpg" alt="Logo Escola" style="height: 80px; margin-bottom: 10px;">
+		            <h1 class="display-5 fw-bold">Bem-vindo ao SIGME</h1>
+		            <p class="col-md-8 fs-4 mx-auto">Sistema Integrado de Gestão de Matrícula Escolar.</p>
+		            
+		            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+		                <a href="@{Logins.form}" class="btn btn-primary btn-lg px-4 gap-3">
+		                    <i class="fas fa-sign-in-alt"></i> Fazer Login
+		                </a>
+		               
+		                </a>
+		            </div>
+		        </div>
+		    </div>
+		#{/else}
+        
+        </div>
+    </div>
+</div>
+

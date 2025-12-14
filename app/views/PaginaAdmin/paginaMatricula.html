@@ -1,0 +1,92 @@
+#{extends 'main.html' /}
+#{set title:'Realizar Matrículas' /}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+       
+        </div>
+
+        <div class="col-md-9">
+            #{if flash.success}
+                <div class="alert alert-success">&{flash.success}</div>
+            #{/if}
+            #{if flash.error}
+                <div class="alert alert-danger">&{flash.error}</div>
+            #{/if}
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-search"></i> Passo 1: Selecione a Turma</h5>
+                </div>
+                <form action="@{PaginaAdmin.paginaMatricula}" method="GET">
+                    <div class="card-body">
+                        <label for="turmaId" class="form-label fw-bold">Turma</label>
+                        <select name="turmaId" id="turmaId" class="form-select" onchange="this.form.submit()">
+                            <option value="">Selecione uma turma para ver os alunos...</option>
+                            #{list items:turmasAtivas, as:'turma'}
+                                <option value="${turma.id}" ${turma.id == turmaSelecionada?.id ? 'selected' : ''}>
+                                    ${turma.nome} (${turma.periodo})
+                                </option>
+                            #{/list}
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            #{if turmaSelecionada}
+                <form action="@{PaginaAdmin.matricularAlunos}" method="POST">
+                    <input type="hidden" name="turmaId" value="${turmaSelecionada.id}">
+                    
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h5 class="mb-0">Passo 2: Gerenciar Alunos da Turma "${turmaSelecionada.nome}"</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-success">Alunos Disponíveis (Sem Turma)</h6>
+                                    <div class="list-group" style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd;">
+                                        #{list items:alunosDisponiveis, as:'aluno'}
+                                            <label class="list-group-item">
+                                                <input type="checkbox" name="alunoIds" value="${aluno.id}" class="form-check-input me-2">
+                                                ${aluno.nome}
+                                            </label>
+                                        #{/list}
+                                        #{if alunosDisponiveis.isEmpty()}
+                                            <div class="list-group-item text-muted">
+                                                Nenhum aluno disponível.
+                                            </div>
+                                        #{/if}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-primary">Alunos Já Matriculados (${alunosMatriculados.size()})</h6>
+                                    <div class="list-group" style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd;">
+                                        #{list items:alunosMatriculados, as:'aluno'}
+                                            <span class="list-group-item">
+                                                <i class="fas fa-user-check me-2"></i> ${aluno.nome}
+                                            </span>
+                                        #{/list}
+                                        #{if alunosMatriculados.isEmpty()}
+                                            <div class="list-group-item text-muted">
+                                                Nenhum aluno matriculado nesta turma.
+                                            </div>
+                                        #{/if}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        #{if !alunosDisponiveis.isEmpty()}
+                            <div class="card-footer text-end">
+                                <button type="submit" class="btn btn-lg btn-success">
+                                    <i class="fas fa-check"></i> Matricular Alunos Selecionados
+                                </button>
+                            </div>
+                        #{/if}
+                    </div>
+                </form>
+            #{/if}
+        </div>
+    </div>
+</div>

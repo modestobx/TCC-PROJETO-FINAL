@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Comprovante de Matrícula - ${aluno.nome}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body { background: #eee; padding: 20px; }
+        .folha {
+            background: white;
+            width: 210mm; /* Largura A4 */
+            min-height: 297mm; /* Altura A4 */
+            margin: 0 auto;
+            padding: 20mm;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        /* Ajustes para quando for imprimir de verdade */
+        @media print {
+            body { background: white; padding: 0; }
+            .folha { box-shadow: none; margin: 0; width: 100%; height: auto; }
+            .no-print { display: none !important; }
+        }
+
+        .cabecalho { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
+        .titulo { font-size: 24px; font-weight: bold; text-transform: uppercase; margin-top: 10px; }
+        .campo { margin-bottom: 15px; }
+        .label { font-weight: bold; color: #555; }
+        .valor { font-size: 18px; border-bottom: 1px dotted #ccc; display: block; padding: 5px 0; }
+        .assinatura { margin-top: 100px; text-align: center; }
+        .linha-assinatura { border-top: 1px solid #000; width: 60%; margin: 0 auto; padding-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="text-center mb-4 no-print">
+        <button onclick="window.print()" class="btn btn-primary btn-lg">
+            <i class="fas fa-print"></i> Imprimir Comprovante
+        </button>
+        <a href="javascript:history.back()" class="btn btn-secondary btn-lg">Voltar</a>
+    </div>
+
+    <div class="folha">
+		
+        <div class="cabecalho">
+            <img src="/public/images/logo.jpg" alt="Logo" style="height: 80px;">
+            <div class="titulo">Comprovante de Matrícula</div>
+            <div>Ano Letivo: ${new Date().format('yyyy')}</div>
+        </div>
+
+        <div class="alert alert-light border text-center">
+            Atestamos para os devidos fins que o(a) estudante abaixo identificado(a) possui vínculo com esta instituição.
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12 campo">
+                <span class="label">Nome do Aluno:</span>
+                <span class="valor">${aluno.nome}</span>
+            </div>
+            
+            <div class="col-6 campo">
+                <span class="label">Matrícula:</span>
+                <span class="valor">${aluno.matricula}</span>
+            </div>
+            <div class="col-6 campo">
+                <span class="label">CPF:</span>
+                <span class="valor">${aluno.cpf}</span>
+            </div>
+
+            <div class="col-6 campo">
+                <span class="label">Situação:</span>
+                <span class="valor">
+                    #{if aluno.status == models.Status.ATIVO} MATRICULADO #{/if}
+                    #{elseif aluno.status == models.Status.PENDENTE} PRÉ-MATRÍCULA (Aguardando Validação) #{/elseif}
+                    #{else} INATIVO #{/else}
+                </span>
+            </div>
+            
+            <div class="col-6 campo">
+                <span class="label">Turma:</span>
+                <span class="valor">${aluno.turma ? aluno.turma.nome : 'Não alocada'}</span>
+            </div>
+
+            <div class="col-12 campo">
+                <span class="label">Data de Emissão:</span>
+                <span class="valor">${new Date().format('dd/MM/yyyy HH:mm:ss')}</span>
+            </div>
+        </div>
+
+        <div class="assinatura">
+            <div class="linha-assinatura">
+                Secretaria Escolar<br>
+                <small>Assinatura do Responsável</small>
+            </div>
+        </div>
+        
+        <div style="position: absolute; bottom: 20mm; width: 100%; text-align: center; font-size: 12px; color: #999;">
+            Documento gerado eletronicamente pelo Sistema de Gestão Escolar.
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,99 @@
+#{extends 'main.html' /}
+#{set title:'Gerenciar Turmas' /}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+
+       
+        </div>
+
+        <div class="col-md-9">
+            #{if flash.success}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle"></i> &{flash.success}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            #{/if}
+            #{if flash.error}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i> &{flash.error}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            #{/if}
+
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-school"></i> Turmas Cadastradas</h5>
+                    <a href="@{PaginaAdmin.formTurma}" class="btn btn-success btn-sm">
+                        <i class="fas fa-plus"></i> Nova Turma
+                    </a>
+                </div>
+                
+                <div class="card-body">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nome da Turma</th>
+                                <th>Ano Letivo</th>
+                                <th>Período</th>
+                                <th class="text-center">Status</th> 
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            #{list items:turmas, as:'turma'}
+							<tr #{if turma.status == models.Status.INATIVO} class="text-muted bg-light" #{/if}>
+                                    <td>${turma.nome}</td>
+                                    <td>${turma.anoLetivo}</td>
+                                    <td>${turma.periodo}</td>
+                                    
+                                    <td class="text-center">
+                                        #{if turma.status == models.Status.ATIVO}
+                                            <span class="badge bg-success">Ativa</span>
+                                        #{/if}
+                                        #{else}
+                                            <span class="badge bg-secondary">Inativa</span>
+                                        #{/else}
+                                    </td>
+                                    
+                                    <td class="text-center">
+                                        #{if turma.status == models.Status.ATIVO}
+										<a href="@{PaginaAdmin.editarTurma(turma.id)}" class="btn btn-sm btn-primary" title="Editar">
+										    <i class="fas fa-pencil-alt"></i>
+										</a>
+
+										<a href="@{PaginaAdmin.RemoverTurma(turma.id)}" 
+										   class="btn btn-sm btn-danger" 
+										   title="Inativar"
+										   onclick="return confirm('Tem certeza que deseja INATIVAR a turma ${turma.nome}?');">
+										    
+										    <i class="fas fa-trash"></i> </a>
+                                            </a>
+                                        #{/if}
+										#{else}	
+											<a href="@{PaginaAdmin.reativarTurma(turma.id)}" 
+											   class="btn btn-sm btn-warning" 
+											   title="Reativar"
+											   onclick="return confirm('Deseja reativar a turma ${turma.nome}?');">
+											    
+											    <i class="fas fa-undo"></i> </a>
+										#{/else}
+                                       
+                                    </td>
+                                </tr>
+                            #{/list}
+                            
+                            #{if turmas.isEmpty()}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted p-4">
+                                        <i class="fas fa-info-circle"></i> Nenhuma turma cadastrada ainda.
+                                    </td>
+                                </tr>
+                            #{/if}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

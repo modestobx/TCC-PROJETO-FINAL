@@ -1,0 +1,29 @@
+#{extends 'main.html' /}
+#{set title:'Sucesso!' /}
+
+<div class="container mt-5 text-center">
+    <div class="card shadow border-0 rounded-4 p-5">
+        <div class="text-success mb-3">
+            <i class="fas fa-check-circle fa-5x"></i>
+        </div>
+        
+        <h2 class="text-success fw-bold">Pré-Matrícula Recebida!</h2>
+        <p class="lead text-muted">Olá, <strong>${aluno.nome}</strong>. Seus dados foram salvos.</p>
+        
+        <div class="alert alert-warning d-inline-block px-5 py-3 my-3">
+            <span class="d-block small fw-bold text-uppercase">Sua Matrícula Provisória</span>
+            <span class="display-4 fw-bold">${aluno.matricula}</span>
+        </div>
+
+        <p>Imprima o comprovante abaixo e leve à secretaria com seus documentos para validar a matrícula.</p>
+
+        <div class="mt-4">
+			<a href="@{Application.comprovante(aluno.id)}" target="_blank" class="btn btn-primary btn-lg px-4 gap-3">
+			    <i class="fas fa-print me-2"></i> Imprimir Comprovante
+			</a>
+			<a href="@{Application.index()}" class="btn btn-outline-secondary btn-lg px-4">
+			    <i class="fas fa-home"></i> Voltar ao Início
+			</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,120 @@
+#{extends 'main.html' /}
+#{set title:'Cadastro de Aluno' /}
+
+#{if flash.error}
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle"></i> &{flash.error}
+    </div>
+#{/if}
+
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-header bg-white border-0 border-bottom p-3">
+        <h5 class="mb-0 text-primary fw-bold">
+            #{if aluno?.id}
+                <i class="fas fa-pencil-alt me-2"></i> Editar Aluno
+            #{/if}
+            #{else}
+                <i class="fas fa-user-plus me-2"></i> Cadastro de Novo Aluno
+            #{/else}
+        </h5>
+    </div>
+    
+    <form action="@{Alunos.salvar}" method="POST">
+        #{if aluno?.id}
+            <input type="hidden" name="aluno.id" value="${aluno.id}">
+        #{/if}
+        
+        <div class="card-body p-4">
+            <h6 class="text-dark fw-bold">Dados Pessoais</h6>
+            <hr class="mt-0 mb-3">
+            
+            <div class="mb-3">
+                <label for="nome" class="form-label fw-bold">Nome Completo</label>
+                <input type="text" name="aluno.nome" id="nome" class="form-control" 
+                       value="${flash['aluno.nome'] ?: aluno?.nome}" required>
+                <span class="error text-danger">#{error 'aluno.nome' /}</span>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="cpf" class="form-label fw-bold">CPF</label>
+                    <input type="text" name="aluno.cpf" id="cpf" class="form-control" 
+                           value="${flash['aluno.cpf'] ?: aluno?.cpf}" placeholder="xxx.xxx.xxx-xx" required>
+                    <span class="error text-danger">#{error 'aluno.cpf' /}</span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="dataNascimento" class="form-label fw-bold">Data de Nascimento</label>
+                    <input type="date" name="aluno.dataNascimento" id="dataNascimento" class="form-control" 
+                           value="${flash['aluno.dataNascimento']?.format('yyyy-MM-dd') ?: aluno?.dataNascimento?.format('yyyy-MM-dd')}" required>
+                    <span class="error text-danger">#{error 'aluno.dataNascimento' /}</span>
+                </div>
+            </div>
+           
+            
+            
+            <div class="mb-3">
+                <label for="endereco" class="form-label fw-bold">Endereço</label>
+                <input type="text" name="aluno.endereco" id="endereco" class="form-control" 
+                       value="${flash['aluno.endereco'] ?: aluno?.endereco}" placeholder="Rua, Número, Bairro...">
+                </div>
+            
+            <h6 class="text-dark fw-bold mt-4">Dados Acadêmicos e de Acesso</h6>
+            <hr class="mt-0 mb-3">
+            
+			#{if aluno?.id}
+			    <div class="col-md-4 mb-3">
+			        <label for="matricula" class="form-label">Matrícula</label>
+			        <input type="text" class="form-control" id="matricula" name="aluno.matricula" value="${aluno?.matricula}" readonly>
+			    </div>
+			#{/if}
+			#{else}
+			    <div class="col-md-4 mb-3">
+			        <label class="form-label">Matrícula</label>
+			        <input type="text" class="form-control" value="Gerada Automaticamente" disabled>
+			    </div>
+			#{/else}
+                <div class="col-md-6 mb-3">
+                    <label for="senha" class="form-label fw-bold">Senha</label>
+                    <input type="password" name="aluno.senha" id="senha" class="form-control">
+                    <small class="form-text text-muted">${aluno?.id ? 'Deixe em branco para manter a atual' : 'Mínimo 6 caracteres'}</small>
+                    <span class="error text-danger">#{error 'aluno.senha' /}</span>
+                </div>
+            </div>
+            
+            <div class="row">
+				<div class="col-md-4 mb-3">
+				    <label class="form-label">Status</label>
+				    <select name="aluno.status" class="form-select">
+				        <option value="ATIVO" ${aluno?.status == models.Status.ATIVO ? 'selected' : ''}>ATIVO</option>
+				        <option value="INATIVO" ${aluno?.status == models.Status.INATIVO ? 'selected' : ''}>INATIVO</option>
+				        <option value="PENDENTE" ${aluno?.status == models.Status.PENDENTE ? 'selected' : ''}>PENDENTE</option>
+				    </select>
+				</div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="turma" class="form-label fw-bold">Turma</label>
+                    <select name="aluno.turma.id" id="turma" class="form-select">
+                        <option value="">(Nenhuma turma)</option>
+                        #{list items:turmas, as:'t'}
+                            <option value="${t.id}" ${aluno?.turma?.id == t.id ? 'selected' : ''}>
+                                ${t.nome} (${t.periodo})
+                            </option>
+                        #{/list}
+                    </select>
+                     <span class="error text-danger">#{error 'aluno.turma' /}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-footer text-end bg-light border-0 pt-3 pb-3">
+            <a href="@{Alunos.listar}" class="btn btn-secondary">
+                <i class="fas fa-times me-1"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save me-1"></i> 
+                #{if aluno?.id}Salvar Alterações#{/if}#{else}Salvar Aluno#{/else}
+            </button>
+        </div>
+    </form>
+</div>

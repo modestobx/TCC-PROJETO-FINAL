@@ -1,0 +1,79 @@
+#{extends 'main.html' /}
+#{set title:'Cadastro de Turma' /}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+
+        
+        </div>
+
+        <div class="col-md-9">
+            #{if flash.error}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i> &{flash.error}
+                </div>
+            #{/if}
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">
+                        #{if turma?.id}
+                            <i class="fas fa-pencil-alt"></i> Editar Turma
+                        #{/if}
+                        #{else}
+                            <i class="fas fa-plus"></i> Cadastro de Nova Turma
+                        #{/else}
+                    </h5>
+                </div>
+                
+                <form action="@{PaginaAdmin.salvarTurma}" method="POST">
+                    
+                    <div class="card-body">
+                        #{if turma?.id}
+                            <input type="hidden" name="turma.id" value="${turma.id}">
+                        #{/if}
+
+                        <div class="mb-3">
+                            <label for="nome" class="form-label fw-bold">Nome da Turma</label>
+                            <input type="text" name="turma.nome" id="nome" class="form-control" 
+                                   placeholder="Ex: 9º Ano A" value="${turma?.nome}" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="anoLetivo" class="form-label fw-bold">Ano Letivo</label>
+                                <input type="number" name="turma.anoLetivo" id="anoLetivo" class="form-control" 
+                                       placeholder="Ex: 2025" value="${turma?.anoLetivo}" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="periodo" class="form-label fw-bold">Período</label>
+                                <select name="turma.periodo" id="periodo" class="form-select" required>
+                                    <option value="" disabled ${turma?.id ? '' : 'selected'}>Selecione...</option>
+                                    <option value="Manhã" ${turma?.periodo == 'Manhã' ? 'selected' : ''}>Manhã</option>
+                                    <option value="Tarde" ${turma?.periodo == 'Tarde' ? 'selected' : ''}>Tarde</option>
+                                    <option value="Noite" ${turma?.periodo == 'Noite' ? 'selected' : ''}>Noite</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer text-end bg-light">
+                        <a href="@{PaginaAdmin.listarTurmas}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> 
+                            #{if turma?.id}
+                                Salvar Alterações
+                            #{/if}
+                            #{else}
+                                Salvar Turma
+                            #{/else}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

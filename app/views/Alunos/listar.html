@@ -1,0 +1,157 @@
+#{extends 'main.html' /}
+#{set title:'Gerenciar Alunos' /}
+
+#{if flash.success}
+    <div class="alert alert-success d-flex align-items-center" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <div>&{flash.success}</div>
+    </div>
+#{/if}
+#{if flash.error}
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <div>&{flash.error}</div>
+    </div>
+#{/if}
+
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-header bg-white border-0 border-bottom p-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 text-primary fw-bold">
+            <i class="fas fa-user-graduate me-2"></i>Alunos Cadastrados
+        </h5>
+        <a href="@{Alunos.form}" class="btn btn-success">
+            <i class="fas fa-plus me-1"></i> Novo Aluno
+        </a>
+    </div>
+    
+    <div class="card-body">
+		<div class="card-body">
+		        
+
+		        <form  id="formBusca" action="@{Alunos.listar()}" method="GET" class="row g-3 mb-4">
+
+		        <form action="@{Alunos.listar()}" method="GET" class="row g-3 mb-4">
+
+		            <div class="col-md-10">
+		                <div class="input-group">
+		                    <span class="input-group-text bg-light border-end-0">
+		                        <i class="fas fa-search text-muted"></i>
+		                    </span>
+		                    <input type="text" name="termo" class="form-control border-start-0" 
+		                           placeholder="Pesquisar aluno por nome..." 
+		                           value="${termo}">
+		                </div>
+		            </div>
+		            <div class="col-md-2 d-grid gap-2 d-md-block">
+		                <button type="submit" class="btn btn-primary">Pesquisar</button>
+		                #{if termo}
+		                    <a href="@{Alunos.listar()}" class="btn btn-outline-secondary" title="Limpar pesquisa">
+		                        <i class="fas fa-times"></i>
+		                    </a>
+		                #{/if}
+		            </div>
+		        </form>
+		        <table class="table table-striped table-hover align-middle">
+
+
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Matrícula</th>
+                    <th scope="col">Turma</th>
+                    <th scope="col" class="text-center">Status</th>
+                    <th scope="col" class="text-center">Ações</th>
+                </tr>
+            </thead>
+
+			<tbody id="tabelaAlunos">
+			    <tr>
+			        <td colspan="5" class="text-center p-5">
+			            <i class="fas fa-spinner fa-spin fa-2x"></i><br>Carregando alunos...
+			        </td>
+			    </tr>
+			</tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        
+        function carregarAlunos(termo) {
+            $.ajax({
+                type: "GET",
+                url: "@{Alunos.listarAjax()}",
+                data: { termo: termo },
+                success: function(dados) {
+                    var tabela = $("#tabelaAlunos");
+                    tabela.empty();
+
+                    if (!dados || dados.length === 0) {
+                        tabela.html('<tr><td colspan="5" class="text-center p-4">Nenhum aluno encontrado.</td></tr>');
+                        return;
+                    }
+
+                    $.each(dados, function(i, aluno) {
+                        
+                        // 1. Define o HTML do Status
+                        var badgeStatus = "";
+                        if (aluno.status === "ATIVO") {
+                            badgeStatus = '<span class="badge text-bg-success">Ativo</span>';
+                        } else if (aluno.status === "PENDENTE") {
+							        badgeStatus = '<span class="badge text-bg-warning">Pendente</span>';
+							    } 
+							    else {
+							        badgeStatus = '<span class="badge text-bg-secondary">Inativo</span>';
+							    }
+
+                        var botoes = "";
+                        var urlEditar = "/alunos/editar?id=" + aluno.id;
+                        var urlInativar = "/alunos/inativar?id=" + aluno.id;
+                        var urlReativar = "/alunos/reativar?id=" + aluno.id;
+						var urlComprovante = "/alunos/comprovante?id=" + aluno.id;
+
+						   
+
+                        if (aluno.id) {
+                            if (aluno.status === "ATIVO") {
+                                botoes += '<a href="' + urlEditar + '" class="btn btn-sm btn-outline-primary me-1" title="Editar"><i class="fas fa-pencil-alt"></i></a>';
+                                botoes += '<a href="' + urlInativar + '" class="btn btn-sm btn-outline-danger" title="Inativar" onclick="return confirm(\'Tem certeza?\');"><i class="fas fa-trash"></i></a>';
+						        botoes += '<a href="' + urlComprovante + '" target="_blank" class="btn btn-sm btn-outline-dark me-1" title="Imprimir Comprovante"><i class="fas fa-print"></i></a>';
+                            } else if (aluno.status === "PENDENTE") {
+								botoes += '<a href="' + urlEditar + '" class="btn btn-sm btn-outline-primary me-1" title="Editar"><i class="fas fa-pencil-alt"></i></a>';
+                                }else{
+								botoes += '<a href="' + urlReativar + '" class="btn btn-sm btn-outline-warning" title="Reativar"><i class="fas fa-undo"></i></a>';
+                            }
+                        }
+
+                        var linha = '<tr>' +
+                            '<td><div class="fw-bold">' + aluno.nome + '</div></td>' +
+                            '<td>' + aluno.matricula + '</td>' +
+                            '<td><i class="fas fa-school text-muted me-1"></i> ' + aluno.turmaNome + '</td>' +
+                            '<td class="text-center">' + badgeStatus + '</td>' +
+                            '<td class="text-center">' + botoes + '</td>' +
+                            '</tr>';
+
+                        tabela.append(linha);
+                    });
+                },
+                error: function(xhr) {
+                    console.error("Erro no AJAX:", xhr);
+                    $("#tabelaAlunos").html('<tr><td colspan="5" class="text-center text-danger">Erro ao carregar.</td></tr>');
+                }
+            });
+        }
+
+        carregarAlunos("");
+
+        $("#formBusca").submit(function(e) {
+            e.preventDefault();
+            var termo = $("input[name='termo']").val();
+            carregarAlunos(termo);
+        });
+    });
+</script>
+
+

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="h-100">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>#{get 'title' /} - Sistema de Matrícula</title>
+	
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    
+    <style>
+        body {
+            background-color: #f8f9fa; /* Fundo cinza claro */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main {
+            flex-grow: 1; /* Faz o conteúdo principal crescer */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+            <div class="container-fluid">
+                #{if session.usuarioPerfil == 'ADMIN'}
+                    <a class="navbar-brand" href="@{PaginaAdmin.form1}">
+                #{/if}
+                #{elseif session.usuarioPerfil == 'ESTUDANTE'}
+                    <a class="navbar-brand" href="@{Application.index}">
+                #{/elseif}
+                #{else}
+                    <a class="navbar-brand" href="@{Logins.form}">
+                #{/else}
+                    <i class="fas fa-graduation-cap"></i>
+                    Escola Municipal Prefeito José Américo 
+                </a>
+                
+                <ul class="navbar-nav ms-auto">
+                    #{if session.usuarioLogado}
+                        <li class="nav-item">
+                            <a class="nav-link" href="@{Logins.logout}">
+                                <i class="fas fa-sign-out-alt"></i> Sair
+                            </a>
+                        </li>
+						
+                    #{/if}
+					
+                </ul>
+				#{if !session.usuarioLogado}
+				    <a class="btn btn-outline-light ms-2" href="@{Application.preMatricula}">
+				        <i class="fas fa-user-plus"></i> Fazer Pré-Matrícula
+				    </a>
+				#{/if}
+            </div>
+        </nav>
+    </header>
+    
+    <main class="container-fluid mt-4">
+    
+        #{if session.usuarioPerfil == 'ADMIN'}
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-dark text-white">
+                            <i class="fas fa-cogs"></i> Menu Principal
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <a href="@{PaginaAdmin.form1}" 
+                               class="list-group-item list-group-item-action ${request.action == 'PaginaAdmin.form1' ? 'active' : ''}">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                            <a href="@{Alunos.listar}" 
+                               class="list-group-item list-group-item-action ${request.controller == 'Alunos' ? 'active' : ''}">
+                                <i class="fas fa-user-graduate"></i> Gerenciar Alunos
+                            </a>
+                            <a href="@{PaginaAdmin.listarTurmas}" 
+                               class="list-group-item list-group-item-action ${request.action.contains('PaginaAdmin.listarTurmas') || request.action.contains('PaginaAdmin.formTurma') ? 'active' : ''}">
+                                <i class="fas fa-school"></i> Gerenciar Turmas
+                            </a>
+                            <a href="@{PaginaAdmin.paginaMatricula(null)}" 
+                               class="list-group-item list-group-item-action ${request.action == 'PaginaAdmin.paginaMatricula' ? 'active' : ''}">
+                                <i class="fas fa-clipboard-check"></i> Realizar Matrículas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    #{doLayout /} </div>
+            </div>
+            
+        #{/if}
+        #{elseif session.usuarioPerfil == 'ESTUDANTE'}
+            <div class="row">
+                <div class="col-md-3">
+                    
+                </div>
+                <div class="col-md-9">
+                    #{doLayout /} </div>
+            </div>
+            
+        #{/elseif}
+        #{else}
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8">
+                    #{doLayout /} </div>
+            </div>
+        #{/else}
+
+    </main>
+
+    <footer class="container-fluid text-center text-muted py-3 mt-auto bg-white border-top">
+        <small>&copy; ${new Date().format('yyyy')} - Escola Jose Americo. Todos os direitos reservados.</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
